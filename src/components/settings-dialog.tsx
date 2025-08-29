@@ -9,12 +9,32 @@ interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
   settingsRef: React.MutableRefObject<{ apiBase: string; apiKey: string; model: string }>
+  lang: 'en' | 'zh'
 }
 
-export function SettingsDialog({ open, onOpenChange, settingsRef }: Props) {
+export function SettingsDialog({ open, onOpenChange, settingsRef, lang }: Props) {
   const [apiBase, setApiBase] = React.useState(settingsRef.current.apiBase)
   const [apiKey, setApiKey] = React.useState(settingsRef.current.apiKey)
   const [model, setModel] = React.useState(settingsRef.current.model)
+
+  const t = {
+    en: {
+      title: 'Settings',
+      apiBase: 'API Base URL',
+      model: 'Model',
+      apiKey: 'API Key',
+      cancel: 'Cancel',
+      save: 'Save',
+    },
+    zh: {
+      title: '设置',
+      apiBase: 'API 地址',
+      model: '模型',
+      apiKey: 'API 密钥',
+      cancel: '取消',
+      save: '保存',
+    },
+  }[lang]
 
   const save = () => {
     settingsRef.current.apiBase = apiBase
@@ -27,27 +47,27 @@ export function SettingsDialog({ open, onOpenChange, settingsRef }: Props) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Settings</DialogTitle>
+          <DialogTitle>{t.title}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-2">
           <div className="space-y-1">
-            <label className="text-sm font-medium">API Base URL</label>
+            <label className="text-sm font-medium">{t.apiBase}</label>
             <Input value={apiBase} onChange={e => setApiBase(e.target.value)} />
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-medium">Model</label>
+            <label className="text-sm font-medium">{t.model}</label>
             <Input value={model} onChange={e => setModel(e.target.value)} />
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-medium">API Key</label>
+            <label className="text-sm font-medium">{t.apiKey}</label>
             <Input type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} />
           </div>
         </div>
         <div className="flex justify-end gap-2 pt-2">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t.cancel}
           </Button>
-          <Button onClick={save}>Save</Button>
+          <Button onClick={save}>{t.save}</Button>
         </div>
       </DialogContent>
     </Dialog>
