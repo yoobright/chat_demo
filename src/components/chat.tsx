@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { SettingsDialog } from '@/components/settings-dialog'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { Loader2 } from 'lucide-react'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -15,6 +16,7 @@ export default function Chat() {
   const [input, setInput] = useState('')
   const [open, setOpen] = useState(false)
   const [lang, setLang] = useState<'en' | 'zh'>('en')
+  const [loading, setLoading] = useState(false)
   const settingsRef = useRef({ apiBase: '', apiKey: '', model: 'gpt-3.5-turbo' })
 
   const t = {
@@ -40,9 +42,11 @@ export default function Chat() {
 
   const sendMessage = async () => {
     if (!input) return
-    const newMessages = [...messages, { role: 'user', content: input }]
-    setMessages(newMessages)
+    const userMessage = { role: 'user', content: input }
+    const newMessages = [...messages, userMessage]
+    setMessages([...newMessages, { role: 'assistant', content: '' }])
     setInput('')
+    setLoading(true)
     try {
       const res = await fetch(`${settingsRef.current.apiBase}/v1/chat/completions`, {
         method: 'POST',
@@ -53,13 +57,50 @@ export default function Chat() {
         body: JSON.stringify({
           model: settingsRef.current.model,
           messages: newMessages,
+          stream: true,
         }),
       })
-      const data = await res.json()
-      const reply = data.choices?.[0]?.message?.content || 'No response'
-      setMessages(m => [...m, { role: 'assistant', content: reply }])
+      if (!res.body) throw new Error('No response body')
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let assistantReply = ''
+      let buffer = ''
+      while (true) {
+        const { value, done } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split('\n')
+        buffer = lines.pop() || ''
+        for (const line of lines) {
+          const trimmed = line.trim()
+          if (!trimmed.startsWith('data:')) continue
+          const data = trimmed.replace('data: ', '')
+          if (data === '[DONE]') {
+            setLoading(false)
+            return
+          }
+          try {
+            const json = JSON.parse(data)
+            const text = json.choices?.[0]?.delta?.content || ''
+            if (text) {
+              assistantReply += text
+              setMessages(m => {
+                const updated = [...m]
+                updated[updated.length - 1] = { role: 'assistant', content: assistantReply }
+                return updated
+              })
+            }
+          } catch {}
+        }
+      }
+      setLoading(false)
     } catch (e: any) {
-      setMessages(m => [...m, { role: 'assistant', content: e.message }])
+      setLoading(false)
+      setMessages(m => {
+        const updated = [...m]
+        updated[updated.length - 1] = { role: 'assistant', content: e.message }
+        return updated
+      })
     }
   }
 
@@ -78,6 +119,9 @@ export default function Chat() {
           <div key={i} className={m.role === 'user' ? 'text-right' : 'text-left'}>
             <div className="inline-block rounded-lg px-3 py-2 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
               {m.content}
+              {loading && i === messages.length - 1 && m.role === 'assistant' && (
+                <Loader2 className="w-4 h-4 ml-1 inline animate-spin" />
+              )}
             </div>
           </div>
         ))}
