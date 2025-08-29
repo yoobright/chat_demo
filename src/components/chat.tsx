@@ -26,17 +26,7 @@ function getNodeText(node: any): string {
 }
 
 export default function Chat() {
-  const [messages, setMessages] = useState<Message[]>(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('messages')
-      if (stored) {
-        try {
-          return JSON.parse(stored)
-        } catch {}
-      }
-    }
-    return []
-  })
+  const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [open, setOpen] = useState(false)
   const [lang, setLang] = useState<'en' | 'zh'>('zh')
@@ -77,6 +67,15 @@ export default function Chat() {
   useEffect(() => {
     document.documentElement.lang = lang
   }, [lang])
+
+  useEffect(() => {
+    const stored = localStorage.getItem('messages')
+    if (stored) {
+      try {
+        setMessages(JSON.parse(stored))
+      } catch {}
+    }
+  }, [])
 
   useEffect(() => {
     localStorage.setItem('messages', JSON.stringify(messages))
