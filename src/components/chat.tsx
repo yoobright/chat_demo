@@ -10,10 +10,19 @@ import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import rehypeHighlight from 'rehype-highlight'
 import { Loader2, Languages, Settings, Send } from 'lucide-react'
+import { CodeBlock } from '@/components/code-block'
 
 interface Message {
   role: 'user' | 'assistant'
   content: string
+}
+
+function getNodeText(node: any): string {
+  if (!node) return ''
+  if (typeof node === 'string') return node
+  if (node.type === 'text') return node.value
+  if (Array.isArray(node.children)) return node.children.map(getNodeText).join('')
+  return ''
 }
 
 export default function Chat() {
@@ -130,6 +139,26 @@ export default function Chat() {
               <ReactMarkdown
                 remarkPlugins={[remarkGfm, remarkMath]}
                 rehypePlugins={[rehypeKatex, rehypeHighlight]}
+                components={{
+                  code({ node, inline, className, children, ...props }: any) {
+                    const text = getNodeText(node)
+                    if (inline) {
+                      return (
+                        <code
+                          className="rounded bg-gray-200 px-1 text-sm dark:bg-gray-700"
+                          {...props}
+                        >
+                          {children}
+                        </code>
+                      )
+                    }
+                    return (
+                      <CodeBlock className={className} code={text}>
+                        {children}
+                      </CodeBlock>
+                    )
+                  }
+                }}
               >
                 {m.content}
               </ReactMarkdown>
