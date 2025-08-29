@@ -13,7 +13,7 @@ import { Loader2, Languages, Settings, Send } from 'lucide-react'
 import { CodeBlock } from '@/components/code-block'
 
 interface Message {
-  role: 'user' | 'assistant'
+  role: 'system' | 'user' | 'assistant'
   content: string
 }
 
@@ -41,7 +41,12 @@ export default function Chat() {
   const [open, setOpen] = useState(false)
   const [lang, setLang] = useState<'en' | 'zh'>('zh')
   const [loading, setLoading] = useState(false)
-  const defaultSettings = { apiBase: '', apiKey: '', model: 'gpt-3.5-turbo' }
+  const defaultSettings = {
+    apiBase: '',
+    apiKey: '',
+    model: 'gpt-3.5-turbo',
+    systemPrompt: '',
+  }
   if (typeof window !== 'undefined') {
     const stored = localStorage.getItem('settings')
     if (stored) {
@@ -93,7 +98,9 @@ export default function Chat() {
         },
         body: JSON.stringify({
           model: settingsRef.current.model,
-          messages: newMessages,
+          messages: settingsRef.current.systemPrompt
+            ? [{ role: 'system', content: settingsRef.current.systemPrompt }, ...newMessages]
+            : newMessages,
           stream: true,
         }),
       })
