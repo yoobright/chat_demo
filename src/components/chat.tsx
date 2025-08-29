@@ -26,12 +26,31 @@ function getNodeText(node: any): string {
 }
 
 export default function Chat() {
-  const [messages, setMessages] = useState<Message[]>([])
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('messages')
+      if (stored) {
+        try {
+          return JSON.parse(stored)
+        } catch {}
+      }
+    }
+    return []
+  })
   const [input, setInput] = useState('')
   const [open, setOpen] = useState(false)
   const [lang, setLang] = useState<'en' | 'zh'>('zh')
   const [loading, setLoading] = useState(false)
-  const settingsRef = useRef({ apiBase: '', apiKey: '', model: 'gpt-3.5-turbo' })
+  const defaultSettings = { apiBase: '', apiKey: '', model: 'gpt-3.5-turbo' }
+  if (typeof window !== 'undefined') {
+    const stored = localStorage.getItem('settings')
+    if (stored) {
+      try {
+        Object.assign(defaultSettings, JSON.parse(stored))
+      } catch {}
+    }
+  }
+  const settingsRef = useRef(defaultSettings)
 
   const t = {
     en: {
@@ -53,6 +72,10 @@ export default function Chat() {
   useEffect(() => {
     document.documentElement.lang = lang
   }, [lang])
+
+  useEffect(() => {
+    localStorage.setItem('messages', JSON.stringify(messages))
+  }, [messages])
 
   const sendMessage = async () => {
     if (!input) return
