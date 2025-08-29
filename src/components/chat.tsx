@@ -182,7 +182,7 @@ export default function Chat() {
             <div className="inline-block rounded-lg px-3 py-2 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm, remarkMath]}
-                rehypePlugins={[rehypeKatex, rehypeHighlight]}
+                rehypePlugins={[rehypeKatex, rehypeHighlight as any]}
                 components={{
                   code({ node, inline, className, children, ...props }: any) {
                     const text = getNodeText(node)
