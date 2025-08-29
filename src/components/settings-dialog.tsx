@@ -18,6 +18,14 @@ export function SettingsDialog({ open, onOpenChange, settingsRef, lang }: Props)
   const [apiKey, setApiKey] = React.useState(settingsRef.current.apiKey)
   const [model, setModel] = React.useState(settingsRef.current.model)
 
+  React.useEffect(() => {
+    if (open) {
+      setApiBase(settingsRef.current.apiBase)
+      setApiKey(settingsRef.current.apiKey)
+      setModel(settingsRef.current.model)
+    }
+  }, [open, settingsRef])
+
   const t = {
     en: {
       title: 'Settings',
@@ -38,9 +46,9 @@ export function SettingsDialog({ open, onOpenChange, settingsRef, lang }: Props)
   }[lang]
 
   const save = () => {
-    settingsRef.current.apiBase = apiBase
-    settingsRef.current.apiKey = apiKey
-    settingsRef.current.model = model
+    const newSettings = { apiBase, apiKey, model }
+    settingsRef.current = newSettings
+    localStorage.setItem('settings', JSON.stringify(newSettings))
     onOpenChange(false)
   }
 
