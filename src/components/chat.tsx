@@ -150,10 +150,10 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex flex-col h-screen w-full max-w-3xl mx-auto">
-      <header className="flex items-center justify-between p-4 border-b">
-        <h1 className="font-bold">{t.title}</h1>
-        <div className="flex gap-2">
+    <div>
+      <header>
+        <h1>{t.title}</h1>
+        <div>
           <ThemeToggle />
           <Button
             onClick={() => {
@@ -163,22 +163,21 @@ export default function Chat() {
               }
             }}
             aria-label={t.clear}
-            className="bg-red-500 hover:bg-red-600 text-white"
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 />
           </Button>
           <Button onClick={() => setLang(lang === 'en' ? 'zh' : 'en')} aria-label={t.toggleLang}>
-            <Languages className="h-4 w-4" />
+            <Languages />
           </Button>
           <Button onClick={() => setOpen(true)} aria-label={t.settings}>
-            <Settings className="h-4 w-4" />
+            <Settings />
           </Button>
         </div>
       </header>
-      <main className="flex-1 overflow-y-auto p-4 space-y-4">
+      <main>
         {messages.map((m, i) => (
-          <div key={i} className={m.role === 'user' ? 'text-right' : 'text-left'}>
-            <div className="inline-block rounded-lg px-3 py-2 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+          <div key={i}>
+            <div>
               <ReactMarkdown
                 remarkPlugins={[remarkGfm, remarkMath]}
                 rehypePlugins={[rehypeKatex, rehypeHighlight]}
@@ -186,14 +185,7 @@ export default function Chat() {
                   code({ node, inline, className, children, ...props }: any) {
                     const text = getNodeText(node)
                     if (inline) {
-                      return (
-                        <code
-                          className="rounded bg-gray-200 px-1 text-sm dark:bg-gray-700"
-                          {...props}
-                        >
-                          {children}
-                        </code>
-                      )
+                      return <code {...props}>{children}</code>
                     }
                     return (
                       <CodeBlock className={className} code={text}>
@@ -206,7 +198,7 @@ export default function Chat() {
                 {m.content}
               </ReactMarkdown>
               {loading && i === messages.length - 1 && m.role === 'assistant' && (
-                <Loader2 className="w-4 h-4 ml-1 inline animate-spin" />
+                <Loader2 />
               )}
             </div>
           </div>
@@ -217,16 +209,14 @@ export default function Chat() {
           e.preventDefault()
           sendMessage()
         }}
-        className="flex gap-2 p-4 border-t"
       >
         <input
-          className="flex-1 border rounded-md px-3 py-2 bg-white dark:bg-black"
           value={input}
           onChange={e => setInput(e.target.value)}
           placeholder={t.placeholder}
         />
         <Button type="submit" aria-label={t.send}>
-          <Send className="h-4 w-4" />
+          <Send />
         </Button>
       </form>
       <SettingsDialog lang={lang} open={open} onOpenChange={setOpen} settingsRef={settingsRef} />

@@ -70,21 +70,21 @@ export function SettingsDialog({ open, onOpenChange, settingsRef, lang }: Props)
         <DialogHeader>
           <DialogTitle>{t.title}</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4 py-2">
-          <div className="space-y-1">
-            <label className="text-sm font-medium">{t.apiBase}</label>
+        <div>
+          <div>
+            <label>{t.apiBase}</label>
             <Input value={apiBase} onChange={e => setApiBase(e.target.value)} />
           </div>
-          <div className="space-y-1">
-            <label className="text-sm font-medium">{t.model}</label>
+          <div>
+            <label>{t.model}</label>
             <Input value={model} onChange={e => setModel(e.target.value)} />
           </div>
-          <div className="space-y-1">
-            <label className="text-sm font-medium">{t.apiKey}</label>
+          <div>
+            <label>{t.apiKey}</label>
             <Input type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} />
           </div>
-          <div className="space-y-1">
-            <label className="text-sm font-medium">{t.systemPrompt}</label>
+          <div>
+            <label>{t.systemPrompt}</label>
             <Textarea
               value={systemPrompt}
               onChange={e => setSystemPrompt(e.target.value)}
@@ -92,12 +92,12 @@ export function SettingsDialog({ open, onOpenChange, settingsRef, lang }: Props)
             />
           </div>
         </div>
-        <div className="flex justify-end gap-2 pt-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)} aria-label={t.cancel}>
-            <X className="h-4 w-4" />
+        <div>
+          <Button onClick={() => onOpenChange(false)} aria-label={t.cancel}>
+            <X />
           </Button>
           <Button onClick={save} aria-label={t.save}>
-            <Save className="h-4 w-4" />
+            <Save />
           </Button>
         </div>
       </DialogContent>

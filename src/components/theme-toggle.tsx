@@ -16,14 +16,14 @@ export function ThemeToggle() {
   if (!mounted) {
     return (
       <Button aria-label="Toggle theme">
-        <Sun className="h-4 w-4" />
+        <Sun />
       </Button>
     )
   }
 
   return (
     <Button onClick={toggle} aria-label="Toggle theme">
-      {theme === 'light' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+      {theme === 'light' ? <Sun /> : <Moon />}
     </Button>
   )
 }
