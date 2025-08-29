@@ -17,7 +17,8 @@
     "clsx": "2.0.0",
     "tailwind-merge": "1.14.0",
     "@radix-ui/react-dialog": "1.0.0",
-    "lucide-react": "0.344.0"
+    "lucide-react": "0.344.0",
+    "react-markdown": "^8.0.5"
   },
   "devDependencies": {
     "@types/node": "20.5.7",
