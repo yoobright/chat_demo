@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button'
 import { SettingsDialog } from '@/components/settings-dialog'
 import { ThemeToggle } from '@/components/theme-toggle'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
 import { Loader2, Languages, Settings, Send } from 'lucide-react'
 
 interface Message {
@@ -123,7 +126,12 @@ export default function Chat() {
         {messages.map((m, i) => (
           <div key={i} className={m.role === 'user' ? 'text-right' : 'text-left'}>
             <div className="inline-block rounded-lg px-3 py-2 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-              <ReactMarkdown>{m.content}</ReactMarkdown>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm, remarkMath]}
+                rehypePlugins={[rehypeKatex]}
+              >
+                {m.content}
+              </ReactMarkdown>
               {loading && i === messages.length - 1 && m.role === 'assistant' && (
                 <Loader2 className="w-4 h-4 ml-1 inline animate-spin" />
               )}
