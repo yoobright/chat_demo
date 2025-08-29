@@ -4,6 +4,7 @@ import * as React from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Save, X } from 'lucide-react'
 
 interface Props {
   open: boolean
@@ -64,10 +65,12 @@ export function SettingsDialog({ open, onOpenChange, settingsRef, lang }: Props)
           </div>
         </div>
         <div className="flex justify-end gap-2 pt-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            {t.cancel}
+          <Button variant="outline" onClick={() => onOpenChange(false)} aria-label={t.cancel}>
+            <X className="h-4 w-4" />
           </Button>
-          <Button onClick={save}>{t.save}</Button>
+          <Button onClick={save} aria-label={t.save}>
+            <Save className="h-4 w-4" />
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

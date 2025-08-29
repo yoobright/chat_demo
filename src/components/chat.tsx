@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { SettingsDialog } from '@/components/settings-dialog'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { Loader2 } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
+import { Loader2, Languages, Settings, Send } from 'lucide-react'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -15,7 +16,7 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [open, setOpen] = useState(false)
-  const [lang, setLang] = useState<'en' | 'zh'>('en')
+  const [lang, setLang] = useState<'en' | 'zh'>('zh')
   const [loading, setLoading] = useState(false)
   const settingsRef = useRef({ apiBase: '', apiKey: '', model: 'gpt-3.5-turbo' })
 
@@ -110,15 +111,19 @@ export default function Chat() {
         <h1 className="font-bold">{t.title}</h1>
         <div className="flex gap-2">
           <ThemeToggle />
-          <Button onClick={() => setLang(lang === 'en' ? 'zh' : 'en')}>{t.toggleLang}</Button>
-          <Button onClick={() => setOpen(true)}>{t.settings}</Button>
+          <Button onClick={() => setLang(lang === 'en' ? 'zh' : 'en')} aria-label={t.toggleLang}>
+            <Languages className="h-4 w-4" />
+          </Button>
+          <Button onClick={() => setOpen(true)} aria-label={t.settings}>
+            <Settings className="h-4 w-4" />
+          </Button>
         </div>
       </header>
       <main className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((m, i) => (
           <div key={i} className={m.role === 'user' ? 'text-right' : 'text-left'}>
             <div className="inline-block rounded-lg px-3 py-2 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-              {m.content}
+              <ReactMarkdown>{m.content}</ReactMarkdown>
               {loading && i === messages.length - 1 && m.role === 'assistant' && (
                 <Loader2 className="w-4 h-4 ml-1 inline animate-spin" />
               )}
@@ -139,7 +144,9 @@ export default function Chat() {
           onChange={e => setInput(e.target.value)}
           placeholder={t.placeholder}
         />
-        <Button type="submit">{t.send}</Button>
+        <Button type="submit" aria-label={t.send}>
+          <Send className="h-4 w-4" />
+        </Button>
       </form>
       <SettingsDialog lang={lang} open={open} onOpenChange={setOpen} settingsRef={settingsRef} />
     </div>
