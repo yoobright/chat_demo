@@ -9,7 +9,7 @@ import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import rehypeHighlight from 'rehype-highlight'
-import { Loader2, Languages, Settings, Send } from 'lucide-react'
+import { Loader2, Languages, Settings, Send, Trash2 } from 'lucide-react'
 import { CodeBlock } from '@/components/code-block'
 
 interface Message {
@@ -54,6 +54,7 @@ export default function Chat() {
       placeholder: 'Send a message',
       send: 'Send',
       toggleLang: '中文',
+      clear: 'Clear',
     },
     zh: {
       title: '聊天演示',
@@ -61,6 +62,7 @@ export default function Chat() {
       placeholder: '发送消息',
       send: '发送',
       toggleLang: 'EN',
+      clear: '清空',
     },
   }[lang]
 
@@ -153,6 +155,18 @@ export default function Chat() {
         <h1 className="font-bold">{t.title}</h1>
         <div className="flex gap-2">
           <ThemeToggle />
+          <Button
+            onClick={() => {
+              setMessages([])
+              if (typeof window !== 'undefined') {
+                localStorage.removeItem('messages')
+              }
+            }}
+            aria-label={t.clear}
+            className="bg-red-500 hover:bg-red-600 text-white"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
           <Button onClick={() => setLang(lang === 'en' ? 'zh' : 'en')} aria-label={t.toggleLang}>
             <Languages className="h-4 w-4" />
           </Button>
