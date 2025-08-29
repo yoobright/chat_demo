@@ -22,7 +22,9 @@
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
     "rehype-katex": "^6.0.3",
-    "katex": "^0.16.9"
+    "katex": "^0.16.9",
+    "rehype-highlight": "^7.0.0",
+    "highlight.js": "^11.8.0"
   },
   "devDependencies": {
     "@types/node": "20.5.7",
