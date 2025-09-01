@@ -11,6 +11,7 @@ import rehypeKatex from 'rehype-katex'
 import rehypeHighlight from 'rehype-highlight'
 import { Loader2, Languages, Settings, Send, Trash2 } from 'lucide-react'
 import { CodeBlock } from '@/components/code-block'
+import { useTheme } from 'next-themes'
 
 type RoleType = 'system' | 'user' | 'assistant'
 interface Message {
@@ -32,6 +33,7 @@ export default function Chat() {
   const [open, setOpen] = useState(false)
   const [lang, setLang] = useState<'en' | 'zh'>('zh')
   const [loading, setLoading] = useState(false)
+  const { theme } = useTheme()
   const defaultSettings = {
     apiBase: '',
     apiKey: '',
@@ -197,7 +199,11 @@ export default function Chat() {
                       )
                     }
                     return (
-                      <CodeBlock className={className} code={text}>
+                      <CodeBlock
+                        className={className}
+                        code={text}
+                        theme={theme === 'dark' ? 'dark' : 'light'}
+                      >
                         {children}
                       </CodeBlock>
                     )
