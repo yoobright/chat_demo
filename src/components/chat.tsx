@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { SettingsDialog } from '@/components/settings-dialog'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { Markdown } from '@/components/markdown'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
@@ -180,32 +181,7 @@ export default function Chat() {
         {messages.map((m, i) => (
           <div key={i} className={m.role === 'user' ? 'text-right' : 'text-left'}>
             <div className="inline-block max-w-full rounded-lg px-3 py-2 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm, remarkMath]}
-                rehypePlugins={[rehypeKatex, rehypeHighlight as any]}
-                components={{
-                  code({ node, inline, className, children, ...props }: any) {
-                    const text = getNodeText(node)
-                    if (inline) {
-                      return (
-                        <code
-                          className="rounded bg-gray-200 px-1 text-sm dark:bg-gray-700"
-                          {...props}
-                        >
-                          {children}
-                        </code>
-                      )
-                    }
-                    return (
-                      <CodeBlock className={className} code={text}>
-                        {children}
-                      </CodeBlock>
-                    )
-                  }
-                }}
-              >
-                {m.content}
-              </ReactMarkdown>
+               <Markdown content={m.content} />
               {loading && i === messages.length - 1 && m.role === 'assistant' && (
                 <Loader2 className="w-4 h-4 ml-1 inline animate-spin" />
               )}
