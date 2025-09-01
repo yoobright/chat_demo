@@ -23,7 +23,7 @@ export function CodeBlock({ className, code, children }: CodeBlockProps) {
 
   return (
     <div className="relative">
-      <pre className="overflow-x-auto rounded-lg p-4 text-sm w-full">
+      <pre className="overflow-x-auto rounded-lg text-sm w-full">
         <code className={cn(className)}>{children}</code>
       </pre>
       <button

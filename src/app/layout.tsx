@@ -1,6 +1,6 @@
 import './globals.css'
 import 'katex/dist/katex.min.css'
-import 'highlight.js/styles/github.css'
+import './highlight.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
