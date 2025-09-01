@@ -5,13 +5,7 @@ import { Button } from '@/components/ui/button'
 import { SettingsDialog } from '@/components/settings-dialog'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Markdown } from '@/components/markdown'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import remarkMath from 'remark-math'
-import rehypeKatex from 'rehype-katex'
-import rehypeHighlight from 'rehype-highlight'
 import { Loader2, Languages, Settings, Send, Trash2 } from 'lucide-react'
-import { CodeBlock } from '@/components/code-block'
 
 type RoleType = 'system' | 'user' | 'assistant'
 interface Message {

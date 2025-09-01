@@ -2,15 +2,12 @@
 
 import { useState } from 'react'
 import { Copy, Check } from 'lucide-react'
-import { cn } from '@/lib/utils'
-
 interface CodeBlockProps {
-  className?: string
   code: string
   children: React.ReactNode
 }
 
-export function CodeBlock({ className, code, children }: CodeBlockProps) {
+export function CodeBlock({ code, children }: CodeBlockProps) {
   const [copied, setCopied] = useState(false)
 
   const onCopy = async () => {
@@ -23,9 +20,7 @@ export function CodeBlock({ className, code, children }: CodeBlockProps) {
 
   return (
     <div className="relative">
-      <pre className="overflow-x-auto rounded-lg text-sm w-full">
-        <code className={cn(className)}>{children}</code>
-      </pre>
+      {children}
       <button
         type="button"
         onClick={onCopy}
