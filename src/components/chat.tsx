@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { SettingsDialog } from '@/components/settings-dialog'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Markdown } from '@/components/markdown'
+import Toast from '@/components/toast'
 import { Loader2, Languages, Settings, Send, Trash2 } from 'lucide-react'
 
 type RoleType = 'system' | 'user' | 'assistant'
@@ -51,6 +52,7 @@ export default function Chat() {
       send: 'Send',
       toggleLang: '中文',
       clear: 'Clear',
+      msgEmpty: 'Message is empty',
     },
     zh: {
       title: '聊天演示',
@@ -59,6 +61,7 @@ export default function Chat() {
       send: '发送',
       toggleLang: 'EN',
       clear: '清空',
+      msgEmpty: '消息不能为空',
     },
   }[lang]
 
@@ -80,7 +83,10 @@ export default function Chat() {
   }, [messages])
 
   const sendMessage = async () => {
-    if (!input) return
+    if (!input) {
+      Toast.notify({ type: 'error', message: t.msgEmpty })
+      return
+    }
     const userMessage = { role: 'user', content: input }
     const newMessages = [...messages, userMessage]
     setMessages([...newMessages as Message[], { role: 'assistant', content: '' }])

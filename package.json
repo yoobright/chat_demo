@@ -10,8 +10,10 @@
     "test": "echo 'No tests'"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@radix-ui/react-dialog": "1.0.0",
     "class-variance-authority": "^0.7.1",
+    "classnames": "^2.5.1",
     "clsx": "^2.0.0",
     "highlight.js": "^11.8.0",
     "katex": "^0.16.9",
@@ -29,7 +31,8 @@
     "remark-math": "^5.1.1",
     "sass": "^1.91.0",
     "tailwind-merge": "^1.14.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "use-context-selector": "^2.0.0"
   },
   "devDependencies": {
     "@types/node": "20.5.7",
