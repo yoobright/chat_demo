@@ -7,6 +7,7 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { Markdown } from '@/components/markdown'
 import Toast from '@/components/toast'
 import { Loader2, Languages, Settings, Send, Trash2 } from 'lucide-react'
+import { loadSettings, AppSettings } from '@/config'
 
 type RoleType = 'system' | 'user' | 'assistant'
 interface Message {
@@ -28,21 +29,7 @@ export default function Chat() {
   const [open, setOpen] = useState(false)
   const [lang, setLang] = useState<'en' | 'zh'>('zh')
   const [loading, setLoading] = useState(false)
-  const defaultSettings = {
-    apiBase: '',
-    apiKey: '',
-    model: 'gpt-3.5-turbo',
-    systemPrompt: '',
-  }
-  if (typeof window !== 'undefined') {
-    const stored = localStorage.getItem('settings')
-    if (stored) {
-      try {
-        Object.assign(defaultSettings, JSON.parse(stored))
-      } catch {}
-    }
-  }
-  const settingsRef = useRef(defaultSettings)
+  const settingsRef = useRef<AppSettings>(loadSettings())
 
   const t = {
     en: {
