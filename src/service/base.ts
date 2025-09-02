@@ -2,6 +2,7 @@ import { API_PREFIX } from '@/config'
 import Toast from '@/components/toast'
 import type { AnnotationReply, MessageEnd, MessageReplace, ThoughtItem } from '@/components/chat-type'
 // import type { VisionFile } from '@/types/app'
+import type { OpenAIResponse } from '@/types/openai'
 
 export enum TransferMethod {
   all = 'all',
@@ -249,12 +250,13 @@ const handleStream = (
             else if (bufferObj.event === 'node_finished') {
               onNodeFinished?.(bufferObj as NodeFinishedResponse)
             }
-            else if (bufferObj.choices) {
-              const content = bufferObj.choices?.[0]?.delta?.content
+            else if ((bufferObj as OpenAIResponse).choices) {
+              const openaiRes = bufferObj as OpenAIResponse
+              const content = openaiRes.choices?.[0]?.delta?.content
               if (content) {
                 onData(content, isFirstMessage, {
-                  conversationId: bufferObj.id,
-                  messageId: bufferObj.id,
+                  conversationId: openaiRes.id,
+                  messageId: openaiRes.id,
                 })
                 isFirstMessage = false
               }
