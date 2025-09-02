@@ -5,6 +5,12 @@ export interface AppSettings {
   systemPrompt: string
 }
 
+export let API_PREFIX = ''
+
+export function setApiBase(base: string) {
+  API_PREFIX = base
+}
+
 export const defaultSettings: AppSettings = {
   apiBase: '',
   apiKey: '',
@@ -13,21 +19,24 @@ export const defaultSettings: AppSettings = {
 }
 
 export function loadSettings(): AppSettings {
+  let settings = defaultSettings
   if (typeof window !== 'undefined') {
     const stored = localStorage.getItem('settings')
     if (stored) {
       try {
-        return { ...defaultSettings, ...JSON.parse(stored) }
+        settings = { ...defaultSettings, ...JSON.parse(stored) }
       } catch {
-        return defaultSettings
+        settings = defaultSettings
       }
     }
   }
-  return defaultSettings
+  setApiBase(settings.apiBase)
+  return settings
 }
 
 export function saveSettings(settings: AppSettings) {
   if (typeof window !== 'undefined') {
     localStorage.setItem('settings', JSON.stringify(settings))
   }
+  setApiBase(settings.apiBase)
 }

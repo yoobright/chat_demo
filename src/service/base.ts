@@ -1,4 +1,4 @@
-// import { API_PREFIX } from '@/config'
+import { API_PREFIX } from '@/config'
 import Toast from '@/components/toast'
 import type { AnnotationReply, MessageEnd, MessageReplace, ThoughtItem } from '@/components/chat-type'
 // import type { VisionFile } from '@/types/app'
