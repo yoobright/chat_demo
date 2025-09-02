@@ -186,9 +186,16 @@ const handleStream = (
       const lines = buffer.split('\n')
       try {
         lines.forEach((message) => {
-          if (message.startsWith('data: ')) { // check if it starts with data:
+          if (message.startsWith('data:')) {
+            const dataStr = message.replace(/^data:\s*/, '').trim()
+            if (!dataStr) return
+            if (dataStr === '[DONE]') {
+              onCompleted?.()
+              hasError = true
+              return
+            }
             try {
-              bufferObj = JSON.parse(message.substring(6)) as Record<string, any>// remove data: and parse as json
+              bufferObj = JSON.parse(dataStr) as Record<string, any>
             }
             catch (e) {
               // mute handle message cut off
@@ -198,7 +205,7 @@ const handleStream = (
               })
               return
             }
-            if (bufferObj.status === 400 || !bufferObj.event) {
+            if (bufferObj.status === 400) {
               onData('', false, {
                 conversationId: undefined,
                 messageId: '',
@@ -241,6 +248,16 @@ const handleStream = (
             }
             else if (bufferObj.event === 'node_finished') {
               onNodeFinished?.(bufferObj as NodeFinishedResponse)
+            }
+            else if (bufferObj.choices) {
+              const content = bufferObj.choices?.[0]?.delta?.content
+              if (content) {
+                onData(content, isFirstMessage, {
+                  conversationId: bufferObj.id,
+                  messageId: bufferObj.id,
+                })
+                isFirstMessage = false
+              }
             }
           }
         })
