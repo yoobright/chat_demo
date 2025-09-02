@@ -9,6 +9,8 @@ import Toast from '@/components/toast'
 import { Loader2, Languages, Settings, Send, Trash2 } from 'lucide-react'
 import { loadSettings, AppSettings } from '@/config'
 import { ssePost } from '@/service/base'
+import { useTranslation } from 'react-i18next'
+import '@/i18n'
 
 type RoleType = 'system' | 'user' | 'assistant'
 interface Message {
@@ -28,34 +30,13 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [open, setOpen] = useState(false)
-  const [lang, setLang] = useState<'en' | 'zh'>('zh')
   const [loading, setLoading] = useState(false)
   const settingsRef = useRef<AppSettings>(loadSettings())
-
-  const t = {
-    en: {
-      title: 'Chat Demo',
-      settings: 'Settings',
-      placeholder: 'Send a message',
-      send: 'Send',
-      toggleLang: '中文',
-      clear: 'Clear',
-      msgEmpty: 'Message is empty',
-    },
-    zh: {
-      title: '聊天演示',
-      settings: '设置',
-      placeholder: '发送消息',
-      send: '发送',
-      toggleLang: 'EN',
-      clear: '清空',
-      msgEmpty: '消息不能为空',
-    },
-  }[lang]
+  const { t, i18n } = useTranslation()
 
   useEffect(() => {
-    document.documentElement.lang = lang
-  }, [lang])
+    document.documentElement.lang = i18n.language
+  }, [i18n.language])
 
   useEffect(() => {
     const stored = localStorage.getItem('messages')
@@ -72,7 +53,7 @@ export default function Chat() {
 
   const sendMessage = () => {
     if (!input) {
-      Toast.notify({ type: 'error', message: t.msgEmpty })
+      Toast.notify({ type: 'error', message: t('chat.msgEmpty') })
       return
     }
     const userMessage = { role: 'user', content: input }
@@ -125,7 +106,7 @@ export default function Chat() {
   return (
     <div className="flex flex-col h-screen w-full max-w-3xl mx-auto">
       <header className="flex items-center justify-between p-4 border-b border-border">
-        <h1 className="font-bold">{t.title}</h1>
+        <h1 className="font-bold">{t('chat.title')}</h1>
         <div className="flex gap-2">
           <ThemeToggle />
           <Button
@@ -135,15 +116,15 @@ export default function Chat() {
                 localStorage.removeItem('messages')
               }
             }}
-            aria-label={t.clear}
+            aria-label={t('chat.clear')}
             className="bg-red-500 hover:bg-red-600 text-white"
           >
             <Trash2 className="h-4 w-4" />
           </Button>
-          <Button onClick={() => setLang(lang === 'en' ? 'zh' : 'en')} aria-label={t.toggleLang}>
+          <Button onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'zh' : 'en')} aria-label={t('chat.toggleLang')}>
             <Languages className="h-4 w-4" />
           </Button>
-          <Button onClick={() => setOpen(true)} aria-label={t.settings}>
+          <Button onClick={() => setOpen(true)} aria-label={t('chat.settings')}>
             <Settings className="h-4 w-4" />
           </Button>
         </div>
@@ -152,7 +133,7 @@ export default function Chat() {
         {messages.map((m, i) => (
           <div key={i} className={m.role === 'user' ? 'text-right' : 'text-left'}>
             <div className="inline-block max-w-full rounded-lg px-3 py-2 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-               <Markdown content={m.content} />
+              <Markdown content={m.content} />
               {loading && i === messages.length - 1 && m.role === 'assistant' && (
                 <Loader2 className="w-4 h-4 ml-1 inline animate-spin" />
               )}
@@ -171,13 +152,13 @@ export default function Chat() {
           className="flex-1 border rounded-md px-3 py-2 bg-white dark:bg-black"
           value={input}
           onChange={e => setInput(e.target.value)}
-          placeholder={t.placeholder}
+          placeholder={t('chat.placeholder')}
         />
-        <Button type="submit" aria-label={t.send}>
+        <Button type="submit" aria-label={t('chat.send')}>
           <Send className="h-4 w-4" />
         </Button>
       </form>
-      <SettingsDialog lang={lang} open={open} onOpenChange={setOpen} settingsRef={settingsRef} />
+      <SettingsDialog open={open} onOpenChange={setOpen} settingsRef={settingsRef} />
     </div>
   )
 }
