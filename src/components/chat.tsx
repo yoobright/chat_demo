@@ -8,6 +8,7 @@ import { Markdown } from '@/components/markdown'
 import Toast from '@/components/toast'
 import { Loader2, Languages, Settings, Send, Trash2 } from 'lucide-react'
 import { loadSettings, AppSettings } from '@/config'
+import { ssePost } from '@/service/base'
 
 type RoleType = 'system' | 'user' | 'assistant'
 interface Message {
@@ -69,7 +70,7 @@ export default function Chat() {
     localStorage.setItem('messages', JSON.stringify(messages))
   }, [messages])
 
-  const sendMessage = async () => {
+  const sendMessage = () => {
     if (!input) {
       Toast.notify({ type: 'error', message: t.msgEmpty })
       return
@@ -79,63 +80,46 @@ export default function Chat() {
     setMessages([...newMessages as Message[], { role: 'assistant', content: '' }])
     setInput('')
     setLoading(true)
-    try {
-      const res = await fetch(`${settingsRef.current.apiBase}/v1/chat/completions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${settingsRef.current.apiKey}`,
-        },
-        body: JSON.stringify({
+    let assistantReply = ''
+    ssePost(
+      '/v1/chat/completions',
+      {
+        body: {
           model: settingsRef.current.model,
           messages: settingsRef.current.systemPrompt
             ? [{ role: 'system', content: settingsRef.current.systemPrompt }, ...newMessages]
             : newMessages,
           stream: true,
+        },
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${settingsRef.current.apiKey}`,
         }),
-      })
-      if (!res.body) throw new Error('No response body')
-      const reader = res.body.getReader()
-      const decoder = new TextDecoder()
-      let assistantReply = ''
-      let buffer = ''
-      while (true) {
-        const { value, done } = await reader.read()
-        if (done) break
-        buffer += decoder.decode(value, { stream: true })
-        const lines = buffer.split('\n')
-        buffer = lines.pop() || ''
-        for (const line of lines) {
-          const trimmed = line.trim()
-          if (!trimmed.startsWith('data:')) continue
-          const data = trimmed.replace('data: ', '')
-          if (data === '[DONE]') {
-            setLoading(false)
-            return
+      },
+      {
+        onData: (message) => {
+          if (message) {
+            assistantReply += message
+            setMessages(m => {
+              const updated = [...m]
+              updated[updated.length - 1] = { role: 'assistant', content: assistantReply }
+              return updated
+            })
           }
-          try {
-            const json = JSON.parse(data)
-            const text = json.choices?.[0]?.delta?.content || ''
-            if (text) {
-              assistantReply += text
-              setMessages(m => {
-                const updated = [...m]
-                updated[updated.length - 1] = { role: 'assistant', content: assistantReply }
-                return updated
-              })
-            }
-          } catch {}
-        }
-      }
-      setLoading(false)
-    } catch (e: any) {
-      setLoading(false)
-      setMessages(m => {
-        const updated = [...m]
-        updated[updated.length - 1] = { role: 'assistant', content: e.message }
-        return updated
-      })
-    }
+        },
+        onError: (e) => {
+          setLoading(false)
+          setMessages(m => {
+            const updated = [...m]
+            updated[updated.length - 1] = { role: 'assistant', content: typeof e === 'string' ? e : String(e) }
+            return updated
+          })
+        },
+        onCompleted: () => {
+          setLoading(false)
+        },
+      },
+    )
   }
 
   return (
