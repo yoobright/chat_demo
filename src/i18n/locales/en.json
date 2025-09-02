@@ -1,0 +1,20 @@
+{
+  "chat": {
+    "title": "Chat Demo",
+    "settings": "Settings",
+    "placeholder": "Send a message",
+    "send": "Send",
+    "toggleLang": "中文",
+    "clear": "Clear",
+    "msgEmpty": "Message is empty"
+  },
+  "settings": {
+    "title": "Settings",
+    "apiBase": "API Base URL",
+    "model": "Model",
+    "apiKey": "API Key",
+    "systemPrompt": "System Prompt",
+    "cancel": "Cancel",
+    "save": "Save"
+  }
+}

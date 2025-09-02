@@ -1,0 +1,20 @@
+{
+  "chat": {
+    "title": "聊天演示",
+    "settings": "设置",
+    "placeholder": "发送消息",
+    "send": "发送",
+    "toggleLang": "EN",
+    "clear": "清空",
+    "msgEmpty": "消息不能为空"
+  },
+  "settings": {
+    "title": "设置",
+    "apiBase": "API 地址",
+    "model": "模型",
+    "apiKey": "API 密钥",
+    "systemPrompt": "系统提示词",
+    "cancel": "取消",
+    "save": "保存"
+  }
+}
