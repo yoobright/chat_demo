@@ -6,16 +6,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Save, X } from 'lucide-react'
+import { AppSettings, saveSettings } from '@/config'
 
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  settingsRef: React.MutableRefObject<{
-    apiBase: string
-    apiKey: string
-    model: string
-    systemPrompt: string
-  }>
+  settingsRef: React.MutableRefObject<AppSettings>
   lang: 'en' | 'zh'
 }
 
@@ -58,9 +54,9 @@ export function SettingsDialog({ open, onOpenChange, settingsRef, lang }: Props)
   }[lang]
 
   const save = () => {
-    const newSettings = { apiBase, apiKey, model, systemPrompt }
+    const newSettings: AppSettings = { apiBase, apiKey, model, systemPrompt }
     settingsRef.current = newSettings
-    localStorage.setItem('settings', JSON.stringify(newSettings))
+    saveSettings(newSettings)
     onOpenChange(false)
   }
 
