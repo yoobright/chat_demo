@@ -4,7 +4,6 @@ import './styles/markdown.scss'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
-import i18n from '@/i18n'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang={i18n.language} suppressHydrationWarning>
+    <html lang="zh" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           {children}
